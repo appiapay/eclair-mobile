@@ -33,6 +33,10 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import com.google.common.base.Strings;
+
+import co.appia.manta.MantaWallet;
+import co.appia.manta.PaymentRequestEnvelope;
+import co.appia.manta.PaymentRequestMessage;
 import fr.acinq.bitcoin.ByteVector32;
 import fr.acinq.bitcoin.MilliSatoshi;
 import fr.acinq.bitcoin.Satoshi;
@@ -51,6 +55,8 @@ import fr.acinq.eclair.wallet.models.*;
 import fr.acinq.eclair.wallet.utils.Constants;
 import fr.acinq.eclair.wallet.utils.TechnicalHelper;
 import fr.acinq.eclair.wallet.utils.WalletUtils;
+
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -62,8 +68,10 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SendPaymentActivity extends EclairActivity {
+
 
   private final Logger log = LoggerFactory.getLogger(SendPaymentActivity.class);
 
@@ -691,9 +699,32 @@ public class SendPaymentActivity extends EclairActivity {
     invoiceAsString = intent.getStringExtra(EXTRA_INVOICE).replaceAll("\\u00A0", "").trim();
     log.info("initializing payment with invoice={}", invoiceAsString);
 
+
+
     if (Strings.isNullOrEmpty(invoiceAsString)) {
       runOnUiThread(() -> canNotHandlePayment(getString(R.string.payment_invalid_generic, chain)));
       return;
+    }
+
+    final List<String> result = MantaWallet.Companion.parseURL(invoiceAsString);
+
+    if (result.size() > 0) {
+      log.info("We have a manta url!");
+      final MantaWallet wallet = MantaWallet.Companion.factory(invoiceAsString, new MemoryPersistence(), null);
+      PaymentRequestEnvelope envelope;
+
+      assert wallet != null;
+      try {
+        envelope = wallet.getPaymentRequestAsync("BTC-LN-TESTNET").get();
+        final PaymentRequestMessage paymentRequestMessage = envelope.unpack();
+        log.info(paymentRequestMessage.toString());
+        invoiceAsString = paymentRequestMessage.getDestinations().get(0).getDestinationAddress();
+
+      } catch (ExecutionException e) {
+        e.printStackTrace();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
     }
 
     try {

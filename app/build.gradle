@@ -17,6 +17,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
+apply plugin: 'com.android.application'
+apply plugin: 'com.github.sgtsilvio.gradle.android-retrofix'
+
+
 android {
   compileSdkVersion 28
   buildToolsVersion '28.0.3'
@@ -89,6 +93,11 @@ greendao {
 }
 
 dependencies {
+  api project(":manta")
+  implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
+  implementation 'net.sourceforge.streamsupport:android-retrostreams:1.7.1'
+  implementation 'net.sourceforge.streamsupport:android-retrofuture:1.7.1'
+
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
     exclude group: 'com.android.support', module: 'support-annotations'
@@ -131,7 +140,7 @@ dependencies {
   implementation 'org.greenrobot:eventbus:3.1.1'
   // http client
   testImplementation 'junit:junit:4.12'
-  androidTestImplementation('com.typesafe.akka:akka-testkit_2.11:2.3.14') {
+  androidTestImplementation('com.typesafe.akka:akka-testkit_2.11:2.5.26') {
     exclude group: 'org.scala-lang', module: 'scala-library'
   }
 }
