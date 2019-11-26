@@ -26,7 +26,7 @@ buildscript {
   dependencies {
     classpath 'com.android.tools.build:gradle:3.5.2'
     classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
-    classpath 'gradle.plugin.com.github.sgtsilvio.gradle:android-retrofix:0.2.1'
+    classpath 'gradle.plugin.com.github.sgtsilvio.gradle:android-retrofix:0.3.0'
   }
 }
 
@@ -38,6 +38,9 @@ allprojects {
     maven {
       url "https://maven.google.com"
     }
+
+    maven { url 'https://jitpack.io' }
+
     google()
   }
 }

@@ -15,10 +15,12 @@
  */
 
 apply plugin: 'com.android.application'
+
+apply plugin: 'com.github.sgtsilvio.gradle.android-retrofix'
+
 apply plugin: 'org.greenrobot.greendao'
 
-apply plugin: 'com.android.application'
-apply plugin: 'com.github.sgtsilvio.gradle.android-retrofix'
+
 
 
 android {
@@ -93,7 +95,8 @@ greendao {
 }
 
 dependencies {
-  api project(":manta")
+  //api project(":manta")
+  implementation 'com.github.alvistar:manta-kotlin:v0.1.1'
   implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.0'
   implementation 'net.sourceforge.streamsupport:android-retrostreams:1.7.1'
   implementation 'net.sourceforge.streamsupport:android-retrofuture:1.7.1'

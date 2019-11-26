@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-include (':manta')
-project (":manta").projectDir = file("../manta-kotlin")
+//include (':manta')
+////project (":manta").projectDir = file("../manta-kotlin")
 
 include ':app'
